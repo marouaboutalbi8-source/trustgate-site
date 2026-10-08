@@ -60,6 +60,33 @@
 
   if (W.innerWidth <= 1000) $$("img[loading=lazy]").forEach(function (im) { im.loading = "eager"; });
 
+  /* ------------------------------------------------ rolling list of authorities (runs with or without the motion library) */
+  (function () {
+    var qa = $(".qa"), items = $$(".qa-list li"), list = $(".qa-list");
+    if (!qa || !items.length) return;
+    var ai = 0, on = true;
+    var roll = function () { var lh = items[0].offsetHeight, mid = W.innerWidth <= 1000 ? 1 : 3; list.style.transform = "translateY(" + (lh * (mid - ai)) + "px)"; items.forEach(function (li, k) { li.classList.toggle("on", k === ai); }); };
+    roll(); W.addEventListener("resize", roll);
+    if (W.IntersectionObserver) new IntersectionObserver(function (es) { on = es[0].isIntersecting; }).observe(qa);
+    setInterval(function () { if (on) { ai = (ai + 1) % items.length; roll(); } }, 1900);
+  })();
+
+  /* ------------------------------------------------ header: a soft backing once the page moves, and the right colour for what is under it */
+  (function () {
+    var hd = $(".hd"); if (!hd) return;
+    var tick2 = function () {
+      hd.classList.toggle("solid", (W.scrollY || d.documentElement.scrollTop) > 40);
+      if (root.classList.contains("menu-open") || !d.elementsFromPoint) return;
+      var els = d.elementsFromPoint(W.innerWidth / 2, Math.round(hd.offsetHeight / 2));
+      for (var i = 0; i < els.length; i++) {
+        if (hd.contains(els[i])) continue;
+        var sec = els[i].closest && els[i].closest("[data-tone]");
+        if (sec && sec !== hd) { if (!sec.classList.contains("hx")) hd.setAttribute("data-tone", sec.getAttribute("data-tone")); return; }
+      }
+    };
+    W.addEventListener("scroll", tick2, { passive: true }); tick2();
+  })();
+
   /* ------------------------------------------------ Doha clock and office status */
   function tick() {
     var now = new Date(), t, wd, h;
@@ -451,10 +478,6 @@
       var sv = { v: 0 };
       gsap.to(sv, { v: 1, duration: 2.6, ease: "power2.out", scrollTrigger: { trigger: qa, start: "top 60%" }, onUpdate: function () { seen = sv.v; }, onComplete: function () { pin.classList.add("on"); } });
       /* rolling picker */
-      var items = $$(".qa-list li", qa), list = $(".qa-list", qa), ai = 0;
-      var roll = function () { var lh = items[0].offsetHeight, mid = W.innerWidth <= 1000 ? 1 : 3; list.style.transform = "translateY(" + (lh * (mid - ai)) + "px)"; items.forEach(function (li, j) { li.classList.toggle("on", j === ai); }); };
-      roll();
-      setInterval(function () { if (vis) { ai = (ai + 1) % items.length; roll(); } }, 1900);
       gsap.fromTo(".qa-card", { y: function () { return W.innerWidth > 1000 ? W.innerHeight * .45 : 60; }, rotate: 5 }, { y: 0, rotate: -2, ease: "none", scrollTrigger: { trigger: qa, start: "top bottom", end: "center center", scrub: 1 } });
       gsap.fromTo(".qa-word", { xPercent: 8 }, { xPercent: -6, ease: "none", scrollTrigger: { trigger: qa, start: "top bottom", end: "bottom top", scrub: true } });
     }

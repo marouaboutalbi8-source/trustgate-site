@@ -1460,3 +1460,16 @@ main p:not(.cap):not(.hx-a):not(.hx-b):not(.qa-word):not(.sl-doc-t):not(.rt-n):n
   /* services: the picture sits under the header, not behind it */
   .sx-media { top: var(--hd); }
 }
+
+/* ================================================================ v9.4: the phone reads well even when the device asks for reduced motion */
+@media (max-width: 1000px) {
+  .stt .stt-h { display: block; color: var(--white); text-shadow: 0 2px 20px rgba(20, 8, 12, .35); margin-bottom: 6vh; }
+  .gs .stt .stt-h { display: none; }
+  .stt .stt-h .ln:nth-child(3) .ln-i { color: #F3D9DF; }
+  .stt .stt-h .ln:nth-child(2) .ln-i, .stt .stt-h .ln:nth-child(4) .ln-i { color: rgba(255, 255, 255, .86); }
+  .qa-list li { transition: color .6s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qa-list { transition: transform .8s ease !important; }
+  .qa-list li { transition: color .6s !important; }
+}
