@@ -1473,3 +1473,5 @@ main p:not(.cap):not(.hx-a):not(.hx-b):not(.qa-word):not(.sl-doc-t):not(.rt-n):n
   .qa-list { transition: transform .8s ease !important; }
   .qa-list li { transition: color .6s !important; }
 }
+/* the certificate sits in the gap between "Checked," and "then stamped." */
+@media (min-width: 1001px) { .sl-stage { left: 44.2%; } }
